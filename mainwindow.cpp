@@ -9,9 +9,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define YYS 20
+#define YYS 10
 #define HIDE_WIN_WIDTH (YYS+3)
-#define YYCLR 255, 192, 128
+#define YYCLR 0, 0, 0
 
 
 void MainWindow::show_side()
