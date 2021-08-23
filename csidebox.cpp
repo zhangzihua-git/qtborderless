@@ -50,7 +50,7 @@ void CSideBox::mousePressEvent(QMouseEvent *event)
     y_last = event->pos().y();
     b_move = true;
 }
-void CSideBox::mouseReleaseEvent(QMouseEvent *event)
+void CSideBox::mouseReleaseEvent(QMouseEvent */*event*/)
 {
     b_move = false;
 }
@@ -94,6 +94,6 @@ void CSideBox::do_move(int x, int y)
         break;
     }
 
-    move_rect(rect);
+    emit move_rect(rect);
 
 }

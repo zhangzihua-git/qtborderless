@@ -34,7 +34,6 @@ class MainWindow : public QMainWindow
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
-//    bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result);
 
     void show_max_or_rest();
 public:

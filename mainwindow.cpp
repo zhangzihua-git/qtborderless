@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);    // 去掉边框
     setAttribute(Qt::WA_TranslucentBackground); // 背景透明
-//    ui-> win->setContentsMargins(YYS, YYS, YYS, YYS); // 注意和阴影大小的协调
 
     //ctrl
     connect(ui->close, &QToolButton::released, this, &MainWindow::close);
@@ -33,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent)
             bShowMax = false;
             showMaximized();
             show_max_or_rest();
-            qDebug() << "showMaximized";
         }
     });
     connect(ui->rest, &QToolButton::released, [&](){
@@ -42,14 +40,14 @@ MainWindow::MainWindow(QWidget *parent)
             bShowMax = true;
             showNormal();
             show_max_or_rest();
-            qDebug() << "showNormal";
         }
     });
 
+    //size
     bShowMax = true;
     show_max_or_rest();
 
-    //size
+    //side
     ui->w_l ->setSideTpe(CSideBox::T_LEFT);
     ui->w_t ->setSideTpe(CSideBox::T_TOP);
     ui->w_r ->setSideTpe(CSideBox::T_RIGHT);
@@ -74,10 +72,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->w_lb, &CSideBox::move_rect, this, &MainWindow::move_rect);
     connect(ui->w_rt, &CSideBox::move_rect, this, &MainWindow::move_rect);
     connect(ui->w_rb, &CSideBox::move_rect, this, &MainWindow::move_rect);
-
-//    setMouseTracking(true);
-//    ui->win->setMouseTracking(true);
-//    setAttribute( Qt::WA_Hover,true);
 
     //anim
     hide_anim = new QPropertyAnimation(this, "pos", this);
@@ -121,7 +115,6 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
 void MainWindow::enterEvent(QEnterEvent * /*event*/)
 {
-//    qDebug() << "MainWindow::enterEvent";
     if(need_show())
     {
         start_show();
@@ -129,7 +122,6 @@ void MainWindow::enterEvent(QEnterEvent * /*event*/)
 }
 void MainWindow::leaveEvent(QEvent * /*event*/)
 {
-//    qDebug() << "MainWindow::leaveEvent";
     int type = need_hide();
     if(type != 0)
     {
@@ -159,7 +151,7 @@ int MainWindow::need_hide()
     else
     {
         QRect rct = geometry();
-        QRect deskrct = QGuiApplication::screens().first()->geometry();
+        QRect deskrct = QGuiApplication::screens()[0]->geometry();
         //if(rct.x() < deskrct.x() || rct.y() < deskrct.y() || rct.x()+rct.width() > rct.width())
         if(rct.y() <= deskrct.y())
         {
@@ -274,7 +266,7 @@ void MainWindow::start_show()
 
 }
 
-void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+void MainWindow::mouseReleaseEvent(QMouseEvent */*event*/)
 {
     b_move = false;
 }
@@ -303,6 +295,18 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 }
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *)
 {
+    if(isMaximized())
+    {
+        bShowMax = true;
+        showNormal();
+        show_max_or_rest();
+    }
+    else
+    {
+        bShowMax = false;
+        showMaximized();
+        show_max_or_rest();
+    }
 }
 
 void MainWindow::show_max_or_rest()
@@ -330,10 +334,4 @@ void MainWindow::move_rect(const QRect& rect)
         return ;
     setGeometry(rect);
 }
-//bool MainWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
-//{
-////    qDebug() << "MainWindow::nativeEvent" << eventType;
-//    return QMainWindow::nativeEvent(eventType, message, result);
-//}
-
 
