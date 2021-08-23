@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>frame/close.png</file>
+        <file>frame/max.png</file>
+        <file>frame/min.png</file>
+        <file>frame/rest.png</file>
+    </qresource>
+</RCC>
