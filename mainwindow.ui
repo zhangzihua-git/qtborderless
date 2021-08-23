@@ -17,7 +17,7 @@
    <string notr="true">#title { background-color: #5555ee }</string>
   </property>
   <widget class="QWidget" name="win">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,0">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -35,18 +35,6 @@
     </property>
     <item>
      <widget class="QWidget" name="w_tt" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>5</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>5</height>
-       </size>
-      </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="spacing">
         <number>0</number>
@@ -64,79 +52,30 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="CSideBox" name="w_lt" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="CSideBox" name="w_lt" native="true"/>
        </item>
        <item>
-        <widget class="CSideBox" name="w_t" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>5</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="CSideBox" name="w_t" native="true"/>
        </item>
        <item>
-        <widget class="CSideBox" name="w_rt" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="CSideBox" name="w_rt" native="true"/>
        </item>
       </layout>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="content">
       <property name="spacing">
        <number>0</number>
       </property>
       <item>
-       <widget class="CSideBox" name="w_l" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>5</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>5</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
+       <widget class="CSideBox" name="w_l" native="true"/>
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QWidget" name="title" native="true">
           <property name="minimumSize">
@@ -275,37 +214,12 @@
        </layout>
       </item>
       <item>
-       <widget class="CSideBox" name="w_r" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>5</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>5</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
+       <widget class="CSideBox" name="w_r" native="true"/>
       </item>
      </layout>
     </item>
     <item>
      <widget class="QWidget" name="w_bb" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>5</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>5</height>
-       </size>
-      </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="spacing">
         <number>0</number>
@@ -323,52 +237,13 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="CSideBox" name="w_lb" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="CSideBox" name="w_lb" native="true"/>
        </item>
        <item>
-        <widget class="CSideBox" name="w_b" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>5</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="CSideBox" name="w_b" native="true"/>
        </item>
        <item>
-        <widget class="CSideBox" name="w_rb" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>5</width>
-           <height>5</height>
-          </size>
-         </property>
-        </widget>
+        <widget class="CSideBox" name="w_rb" native="true"/>
        </item>
       </layout>
      </widget>

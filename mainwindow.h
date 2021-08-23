@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow
     int x_last;
     int y_last;
     bool b_move;
-    bool bShowMax;
+//    bool bShowMax;
 
 
     int hided_type;
@@ -35,10 +35,18 @@ class MainWindow : public QMainWindow
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
 
-    void show_max_or_rest();
+    void show_max_or_rest_icon();
+    void init_side();
+
+    void show_side();
+    void hide_side();
+
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    void showMaxOrNormal();
 
 private:
     Ui::MainWindow *ui;

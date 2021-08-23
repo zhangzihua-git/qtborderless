@@ -32,6 +32,31 @@ void CSideBox::setSideTpe(SideType st)
 
 }
 
+void CSideBox::setSideSize(int size)
+{
+    switch (sidetype) {
+    case T_LEFT:
+    case T_RIGHT:
+        setMinimumWidth(size);
+        setMaximumWidth(size);
+        break;
+    case T_TOP:
+    case T_BOTTOM:
+        setMinimumHeight(size);
+        setMaximumHeight(size);
+        break;
+    case T_LEFT_TOP:
+    case T_RIGHT_BOTTOM:
+    case T_LEFT_BOTTOM:
+    case T_RIGHT_TOP:
+        setMinimumHeight(size);
+        setMaximumHeight(size);
+        setMinimumWidth(size);
+        setMaximumWidth(size);
+        break;
+    }
+}
+
 
 void CSideBox::mouseMoveEvent(QMouseEvent *event)
 {

@@ -9,45 +9,53 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define YYS 5
+#define YYS 20
 #define HIDE_WIN_WIDTH (YYS+3)
 #define YYCLR 255, 192, 128
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+
+void MainWindow::show_side()
 {
-    b_move = false;
+    ui->w_l ->setVisible(true);
+    ui->w_t ->setVisible(true);
+    ui->w_r ->setVisible(true);
+    ui->w_b ->setVisible(true);
+    ui->w_lt->setVisible(true);
+    ui->w_lb->setVisible(true);
+    ui->w_rt->setVisible(true);
+    ui->w_rb->setVisible(true);
+    ui->w_l ->setSideSize(YYS);
+    ui->w_t ->setSideSize(YYS);
+    ui->w_r ->setSideSize(YYS);
+    ui->w_b ->setSideSize(YYS);
+    ui->w_lt->setSideSize(YYS);
+    ui->w_lb->setSideSize(YYS);
+    ui->w_rt->setSideSize(YYS);
+    ui->w_rb->setSideSize(YYS);
 
-    ui->setupUi(this);
-    setWindowFlags(Qt::FramelessWindowHint);    // 去掉边框
-    setAttribute(Qt::WA_TranslucentBackground); // 背景透明
 
-    //ctrl
-    connect(ui->close, &QToolButton::released, this, &MainWindow::close);
-    connect(ui->min, &QToolButton::released, this,&MainWindow::showMinimized);
-    connect(ui->max, &QToolButton::released, [&](){
-        if(bShowMax)
-        {
-            bShowMax = false;
-            showMaximized();
-            show_max_or_rest();
-        }
-    });
-    connect(ui->rest, &QToolButton::released, [&](){
-        if(!bShowMax)
-        {
-            bShowMax = true;
-            showNormal();
-            show_max_or_rest();
-        }
-    });
-
-    //size
-    bShowMax = true;
-    show_max_or_rest();
-
-    //side
+}
+void MainWindow::hide_side()
+{
+    ui->w_l ->setVisible(false);
+    ui->w_t ->setVisible(false);
+    ui->w_r ->setVisible(false);
+    ui->w_b ->setVisible(false);
+    ui->w_lt->setVisible(false);
+    ui->w_lb->setVisible(false);
+    ui->w_rt->setVisible(false);
+    ui->w_rb->setVisible(false);
+    ui->w_l ->setSideSize(0);
+    ui->w_t ->setSideSize(0);
+    ui->w_r ->setSideSize(0);
+    ui->w_b ->setSideSize(0);
+    ui->w_lt->setSideSize(0);
+    ui->w_lb->setSideSize(0);
+    ui->w_rt->setSideSize(0);
+    ui->w_rb->setSideSize(0);
+}
+void MainWindow::init_side()
+{
     ui->w_l ->setSideTpe(CSideBox::T_LEFT);
     ui->w_t ->setSideTpe(CSideBox::T_TOP);
     ui->w_r ->setSideTpe(CSideBox::T_RIGHT);
@@ -73,14 +81,36 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->w_rt, &CSideBox::move_rect, this, &MainWindow::move_rect);
     connect(ui->w_rb, &CSideBox::move_rect, this, &MainWindow::move_rect);
 
+    show_side();
+
+}
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    b_move = false;
+
+    ui->setupUi(this);
+    setWindowFlags(Qt::FramelessWindowHint);    // 去掉边框
+    setAttribute(Qt::WA_TranslucentBackground); // 背景透明
+
+    //ctrl
+    connect(ui->close, &QToolButton::released, this, &MainWindow::close);
+    connect(ui->min, &QToolButton::released, this,&MainWindow::showMinimized);
+    connect(ui->max, &QToolButton::released, this, &MainWindow::showMaxOrNormal);
+    connect(ui->rest, &QToolButton::released, this, &MainWindow::showMaxOrNormal);
+
+    show_max_or_rest_icon();
+
+    //side
+    init_side();
+
     //anim
     hide_anim = new QPropertyAnimation(this, "pos", this);
     show_anim = new QPropertyAnimation(this, "pos", this);
     hide_anim->setDuration(150);
     show_anim->setDuration(150);
     hided_type = 0;
-
-
 
 }
 
@@ -91,7 +121,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
-    if (true)
+    if (!isMaximized())
     {
         QPainterPath path;
         path.setFillRule(Qt::WindingFill);
@@ -104,11 +134,20 @@ void MainWindow::paintEvent(QPaintEvent *event)
         {
             path.setFillRule(Qt::WindingFill);
             path.addRect(YYS - i, YYS - i, this->width() - (YYS - i) * 2, this->height() - (YYS - i) * 2);
-            color.setAlpha(100 - qSqrt(i) * 50);
+            color.setAlpha(5 - i*1.0/YYS*5);
             painter.setPen(color);
             painter.drawPath(path);
         }
 
+    }
+    else
+    {
+        QPainterPath path;
+        path.setFillRule(Qt::WindingFill);
+        path.addRect(0, 0, this->width(), this->height());
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.fillPath(path, QBrush(Qt::white));
     }
     return QMainWindow::paintEvent(event);
 }
@@ -295,36 +334,25 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 }
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *)
 {
-    if(isMaximized())
-    {
-        bShowMax = true;
-        showNormal();
-        show_max_or_rest();
-    }
-    else
-    {
-        bShowMax = false;
-        showMaximized();
-        show_max_or_rest();
-    }
+    showMaxOrNormal();
 }
 
-void MainWindow::show_max_or_rest()
+void MainWindow::show_max_or_rest_icon()
 {
-    if(bShowMax)
-    {
-        ui->max->setVisible(true);
-        ui->max->setEnabled(true);
-        ui->rest->setVisible(false);
-        ui->rest->setEnabled(false);
-    }
-    else
+    if(isMaximized())
     {
         ui->max->setVisible(false);
         ui->max->setEnabled(false);
         ui->rest->setVisible(true);
         ui->rest->setEnabled(true);
 
+    }
+    else
+    {
+        ui->max->setVisible(true);
+        ui->max->setEnabled(true);
+        ui->rest->setVisible(false);
+        ui->rest->setEnabled(false);
     }
 }
 
@@ -335,3 +363,18 @@ void MainWindow::move_rect(const QRect& rect)
     setGeometry(rect);
 }
 
+void MainWindow::showMaxOrNormal()
+{
+    if(isMaximized())
+    {
+        showNormal();
+        show_side();
+    }
+    else
+    {
+        showMaximized();
+        hide_side();
+    }
+    show_max_or_rest_icon();
+    update();
+}

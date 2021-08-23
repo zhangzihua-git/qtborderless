@@ -32,6 +32,7 @@ public:
     {
         this->win = win;
     }
+    void setSideSize(int size);
 signals:
     void move_rect(const QRect&);
 private:
