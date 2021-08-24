@@ -1,10 +1,11 @@
-#include <QGridLayout>
+﻿#include <QGridLayout>
 #include <QGraphicsDropShadowEffect>
 #include <QPainter>
 #include <QPainterPath>
 #include <QApplication>
 #include <QScreen>
 #include <QMouseEvent>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -100,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //配置属性
     set_sideSize(10);
-    set_sideColor(QColor(255, 0, 0, 5));
+    set_sideColor(QColor(0, 0, 0, 20));
     set_autoHide(true);
     set_sizeChangeable(true);
     set_sideRadius(10);
@@ -181,7 +182,11 @@ void MainWindow::paintEvent(QPaintEvent *event)
     return QMainWindow::paintEvent(event);
 }
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+void MainWindow::enterEvent(QEvent * /*event*/)
+#else
 void MainWindow::enterEvent(QEnterEvent * /*event*/)
+#endif
 {
     if(need_show())
     {
@@ -326,7 +331,7 @@ void MainWindow::start_show()
 
 }
 
-void MainWindow::mouseReleaseEvent(QMouseEvent */*event*/)
+void MainWindow::mouseReleaseEvent(QMouseEvent * /*event*/)
 {
     b_move = false;
 }

@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -47,7 +47,11 @@ class MainWindow : public QMainWindow
     void start_show();
 
     void paintEvent(QPaintEvent *event);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    void enterEvent(QEvent * event);
+#else
     void enterEvent(QEnterEvent * event);
+#endif
     void leaveEvent(QEvent * event);
 
     void mouseMoveEvent(QMouseEvent *event);
