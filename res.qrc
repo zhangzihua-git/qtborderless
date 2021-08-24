@@ -4,5 +4,6 @@
         <file>frame/max.png</file>
         <file>frame/min.png</file>
         <file>frame/rest.png</file>
+        <file>frame/title.png</file>
     </qresource>
 </RCC>

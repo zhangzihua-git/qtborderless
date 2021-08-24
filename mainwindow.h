@@ -28,6 +28,7 @@ class MainWindow : public QMainWindow
     ADD_PROPERTY(QColor, sideColor)
     ADD_PROPERTY(bool, autoHide)
     ADD_PROPERTY(bool, sizeChangeable)
+    ADD_PROPERTY(int , sideRadius)
 
     QPropertyAnimation* hide_anim;
     QPropertyAnimation* show_anim;

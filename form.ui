@@ -1,31 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Form</class>
- <widget class="QWidget" name="Form">
+ <widget class="QFrame" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>399</height>
+    <width>515</width>
+    <height>412</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Frame</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>180</y>
-     <width>54</width>
-     <height>12</height>
-    </rect>
+  <property name="styleSheet">
+   <string notr="true">#w{
+background-color:rgb(161, 242, 255);
+}</string>
+  </property>
+  <property name="lineWidth">
+   <number>0</number>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>9</number>
    </property>
-   <property name="text">
-    <string>xx</string>
+   <property name="leftMargin">
+    <number>9</number>
    </property>
-  </widget>
+   <property name="topMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="w" native="true"/>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

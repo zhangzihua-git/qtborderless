@@ -102,17 +102,27 @@ MainWindow::MainWindow(QWidget *parent)
     set_sideColor(QColor(255, 0, 0, 5));
     set_autoHide(false);
     set_sizeChangeable(true);
-
-
-
-
-
-
-
-
-
-
+    set_sideRadius(10);
     ui->setupUi(this);
+
+
+    //qss
+    QString qss = R"(
+#title {
+border-image: url(:/frame/title.png);
+border-top-left-radius: %1px;
+border-top-right-radius: %1px;
+}
+#form {
+background-color: rgb(255, 255, 255);
+border-bottom-left-radius: %1px;
+border-bottom-right-radius: %1px;
+}
+)";
+    setStyleSheet(qss.arg(sideRadius()));
+
+
+
     setWindowFlags(Qt::FramelessWindowHint);    // 去掉边框
     setAttribute(Qt::WA_TranslucentBackground); // 背景透明
 
@@ -143,21 +153,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
+//    QPainterPath path;
+//    path.setFillRule(Qt::WindingFill);
+//    path.addRect(0, 0, this->width(), this->height());
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing, true);
+//    painter.fillPath(path, QBrush(Qt::white));
+
     if (!isMaximized())
     {
         QPainterPath path;
-        path.setFillRule(Qt::WindingFill);
-        path.addRect(YYS, YYS, this->width() - YYS * 2, this->height() - YYS * 2);
         QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing, true);
-        painter.fillPath(path, QBrush(Qt::white));
+
         QColor color = sideColor();
         int max_alpha = color.alpha();
-        for (int i = 0; i < YYS; i++)
+        int yyw =YYS +sideRadius();
+        for (int i = 0; i < yyw; i++)
         {
             path.setFillRule(Qt::WindingFill);
-            path.addRect(YYS - i, YYS - i, this->width() - (YYS - i) * 2, this->height() - (YYS - i) * 2);
-            color.setAlpha(max_alpha-max_alpha*i/YYS);
+            path.addRect(yyw - i, yyw - i, this->width() - (yyw - i) * 2, this->height() - (yyw - i) * 2);
+            color.setAlpha(max_alpha-max_alpha*i/yyw);
             painter.setPen(color);
             painter.drawPath(path);
         }
@@ -165,12 +180,6 @@ void MainWindow::paintEvent(QPaintEvent *event)
     }
     else
     {
-        QPainterPath path;
-        path.setFillRule(Qt::WindingFill);
-        path.addRect(0, 0, this->width(), this->height());
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing, true);
-        painter.fillPath(path, QBrush(Qt::white));
     }
     return QMainWindow::paintEvent(event);
 }

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#title { background-color: #5555ee }</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="win">
    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,0">
@@ -77,7 +77,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QWidget" name="title" native="true">
+         <widget class="QFrame" name="title">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -209,7 +209,7 @@
          </widget>
         </item>
         <item>
-         <widget class="Form" name="from" native="true"/>
+         <widget class="Form" name="form"/>
         </item>
        </layout>
       </item>
@@ -253,15 +253,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Form</class>
-   <extends>QWidget</extends>
-   <header>form.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>CSideBox</class>
    <extends>QWidget</extends>
    <header>csidebox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Form</class>
+   <extends>QFrame</extends>
+   <header>form.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
