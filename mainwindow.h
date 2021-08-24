@@ -8,9 +8,26 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+#define ADD_PROPERTY(t, p) \
+    Q_PROPERTY(t p READ p WRITE set_##p NOTIFY p##_changed)\
+    t m_##p;\
+public:\
+    Q_SIGNAL void p##_changed(t p);\
+    t p(){return m_##p;}\
+    void set_##p(t p){m_##p = p;}\
+private:
+
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+
+    ADD_PROPERTY(int, sideSize)
+    //alpha 0最浅 255 最深
+    ADD_PROPERTY(QColor, sideColor)
+    ADD_PROPERTY(bool, autoHide)
+    ADD_PROPERTY(bool, sizeChangeable)
 
     QPropertyAnimation* hide_anim;
     QPropertyAnimation* show_anim;
@@ -40,16 +57,17 @@ class MainWindow : public QMainWindow
 
     void show_side();
     void hide_side();
+    void showMaxOrNormal();
+    void move_rect(const QRect& rect);
 
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void showMaxOrNormal();
-
 private:
     Ui::MainWindow *ui;
-    void move_rect(const QRect& rect);
+
+
 };
 #endif // MAINWINDOW_H

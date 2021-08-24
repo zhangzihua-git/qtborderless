@@ -4,29 +4,45 @@
 
 CSideBox::CSideBox(QWidget *parent) : QWidget(parent)
 {
+    b_changeable = true;
     win = nullptr;
 }
 
+void CSideBox::setSideChangeable(bool changeable)
+{
+    b_changeable = changeable;
+    if(!b_changeable)
+    {
+        setCursor(Qt::ArrowCursor);
+    }
+}
 void CSideBox::setSideTpe(SideType st)
 {
-    sidetype = st;
-    switch (st) {
-    case T_LEFT:
-    case T_RIGHT:
-        setCursor(Qt::SizeHorCursor);
-        break;
-    case T_TOP:
-    case T_BOTTOM:
-        setCursor(Qt::SizeVerCursor);
-        break;
-    case T_LEFT_TOP:
-    case T_RIGHT_BOTTOM:
-        setCursor(Qt::SizeFDiagCursor);
-        break;
-    case T_LEFT_BOTTOM:
-    case T_RIGHT_TOP:
-        setCursor(Qt::SizeBDiagCursor);
-        break;
+    if(!b_changeable)
+    {
+        setCursor(Qt::ArrowCursor);
+    }
+    else
+    {
+        sidetype = st;
+        switch (st) {
+        case T_LEFT:
+        case T_RIGHT:
+            setCursor(Qt::SizeHorCursor);
+            break;
+        case T_TOP:
+        case T_BOTTOM:
+            setCursor(Qt::SizeVerCursor);
+            break;
+        case T_LEFT_TOP:
+        case T_RIGHT_BOTTOM:
+            setCursor(Qt::SizeFDiagCursor);
+            break;
+        case T_LEFT_BOTTOM:
+        case T_RIGHT_TOP:
+            setCursor(Qt::SizeBDiagCursor);
+            break;
+        }
     }
 
 
@@ -60,6 +76,10 @@ void CSideBox::setSideSize(int size)
 
 void CSideBox::mouseMoveEvent(QMouseEvent *event)
 {
+    if(!b_changeable)
+    {
+        return ;
+    }
     if(b_move)
     {
         // 需要移动
@@ -71,18 +91,30 @@ void CSideBox::mouseMoveEvent(QMouseEvent *event)
 }
 void CSideBox::mousePressEvent(QMouseEvent *event)
 {
+    if(!b_changeable)
+    {
+        return ;
+    }
     x_last = event->pos().x();
     y_last = event->pos().y();
     b_move = true;
 }
 void CSideBox::mouseReleaseEvent(QMouseEvent */*event*/)
 {
+    if(!b_changeable)
+    {
+        return ;
+    }
     b_move = false;
 }
 
 
 void CSideBox::do_move(int x, int y)
 {
+    if(!b_changeable)
+    {
+        return ;
+    }
     if(!win)
         return ;
 

@@ -10,6 +10,7 @@ class CSideBox : public QWidget
     int x_last;
     int y_last;
     bool b_move;
+    bool b_changeable;
 public:
     explicit CSideBox(QWidget *parent = nullptr);
     void mouseMoveEvent(QMouseEvent *event);
@@ -33,6 +34,7 @@ public:
         this->win = win;
     }
     void setSideSize(int size);
+    void setSideChangeable(bool changeable);
 signals:
     void move_rect(const QRect&);
 private:

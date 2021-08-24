@@ -9,9 +9,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define YYS 10
+#define YYS sideSize()
 #define HIDE_WIN_WIDTH (YYS+3)
-#define YYCLR 0, 0, 0
 
 
 void MainWindow::show_side()
@@ -64,6 +63,14 @@ void MainWindow::init_side()
     ui->w_lb->setSideTpe(CSideBox::T_LEFT_BOTTOM);
     ui->w_rt->setSideTpe(CSideBox::T_RIGHT_TOP);
     ui->w_rb->setSideTpe(CSideBox::T_RIGHT_BOTTOM);
+    ui->w_l ->setSideChangeable(sizeChangeable());
+    ui->w_t ->setSideChangeable(sizeChangeable());
+    ui->w_r ->setSideChangeable(sizeChangeable());
+    ui->w_b ->setSideChangeable(sizeChangeable());
+    ui->w_lt->setSideChangeable(sizeChangeable());
+    ui->w_lb->setSideChangeable(sizeChangeable());
+    ui->w_rt->setSideChangeable(sizeChangeable());
+    ui->w_rb->setSideChangeable(sizeChangeable());
     ui->w_l ->setWin(this);
     ui->w_t ->setWin(this);
     ui->w_r ->setWin(this);
@@ -89,6 +96,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     b_move = false;
+
+    //配置属性
+    set_sideSize(10);
+    set_sideColor(QColor(255, 0, 0, 5));
+    set_autoHide(false);
+    set_sizeChangeable(true);
+
+
+
+
+
+
+
+
+
 
     ui->setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);    // 去掉边框
@@ -129,12 +151,13 @@ void MainWindow::paintEvent(QPaintEvent *event)
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing, true);
         painter.fillPath(path, QBrush(Qt::white));
-        QColor color(0, YYCLR);
+        QColor color = sideColor();
+        int max_alpha = color.alpha();
         for (int i = 0; i < YYS; i++)
         {
             path.setFillRule(Qt::WindingFill);
             path.addRect(YYS - i, YYS - i, this->width() - (YYS - i) * 2, this->height() - (YYS - i) * 2);
-            color.setAlpha(5 - i*1.0/YYS*5);
+            color.setAlpha(max_alpha-max_alpha*i/YYS);
             painter.setPen(color);
             painter.drawPath(path);
         }
@@ -170,6 +193,10 @@ void MainWindow::leaveEvent(QEvent * /*event*/)
 
 int MainWindow::need_hide()
 {
+    if(!autoHide())
+    {
+        return 0;
+    }
     if(isMaximized())
     {
         return 0;
@@ -339,7 +366,15 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *)
 
 void MainWindow::show_max_or_rest_icon()
 {
-    if(isMaximized())
+    if(!sizeChangeable())
+    {
+        ui->max->setVisible(false);
+        ui->max->setEnabled(false);
+        ui->rest->setVisible(false);
+        ui->rest->setEnabled(false);
+
+    }
+    else if(isMaximized())
     {
         ui->max->setVisible(false);
         ui->max->setEnabled(false);
@@ -365,6 +400,10 @@ void MainWindow::move_rect(const QRect& rect)
 
 void MainWindow::showMaxOrNormal()
 {
+    if(!sizeChangeable())
+    {
+        return ;
+    }
     if(isMaximized())
     {
         showNormal();
