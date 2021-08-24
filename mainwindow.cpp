@@ -93,6 +93,7 @@ void MainWindow::init_side()
 }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
+    , isHided(false)
     , ui(new Ui::MainWindow)
 {
     b_move = false;
@@ -100,9 +101,13 @@ MainWindow::MainWindow(QWidget *parent)
     //配置属性
     set_sideSize(10);
     set_sideColor(QColor(255, 0, 0, 5));
-    set_autoHide(false);
+    set_autoHide(true);
     set_sizeChangeable(true);
     set_sideRadius(10);
+
+
+
+
     ui->setupUi(this);
 
 
@@ -139,10 +144,8 @@ border-bottom-right-radius: %1px;
 
     //anim
     hide_anim = new QPropertyAnimation(this, "pos", this);
-    show_anim = new QPropertyAnimation(this, "pos", this);
     hide_anim->setDuration(150);
-    show_anim->setDuration(150);
-    hided_type = 0;
+
 
 }
 
@@ -153,12 +156,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
-//    QPainterPath path;
-//    path.setFillRule(Qt::WindingFill);
-//    path.addRect(0, 0, this->width(), this->height());
-//    QPainter painter(this);
-//    painter.setRenderHint(QPainter::Antialiasing, true);
-//    painter.fillPath(path, QBrush(Qt::white));
 
     if (!isMaximized())
     {
@@ -193,150 +190,138 @@ void MainWindow::enterEvent(QEnterEvent * /*event*/)
 }
 void MainWindow::leaveEvent(QEvent * /*event*/)
 {
-    int type = need_hide();
-    if(type != 0)
+    if(need_hide())
     {
-        start_hide(type);
+        start_hide();
     }
 }
 
-int MainWindow::need_hide()
+static bool check_hide(int hideSize, const QVector<QRect>& screenRects, const QRect& winRect, QPoint& showPoint, QPoint& hidePoint)
 {
-    if(!autoHide())
+    for(int i=0; i<screenRects.size(); i++)
     {
-        return 0;
-    }
-    if(isMaximized())
-    {
-        return 0;
-    }
-
-    if(hided_type != 0)
-    {
-        return 0;
-    }
-    else if(hide_anim->state() != QAbstractAnimation::Stopped)
-    {
-        return 0;
-    }
-    else if(show_anim->state() != QAbstractAnimation::Stopped)
-    {
-        return 0;
-    }
-    else
-    {
-        QRect rct = geometry();
-        QRect deskrct = QGuiApplication::screens()[0]->geometry();
-        //if(rct.x() < deskrct.x() || rct.y() < deskrct.y() || rct.x()+rct.width() > rct.width())
-        if(rct.y() <= deskrct.y())
+        bool bfound = true;
+        const QRect& screenRect(screenRects[i]);
+        if(screenRect.intersected(winRect).isEmpty())
         {
-            return 1;
+            bfound = false;
         }
-        else if(rct.x() <= deskrct.x() )
+        else if(winRect.top() <= screenRect.top())
         {
-            return 2;
+            //top
+            showPoint.setX(winRect.left());
+            showPoint.setY(screenRect.top() - hideSize);
+            hidePoint.setX(winRect.left());
+            hidePoint.setY(screenRect.top() - winRect.height() + hideSize);
         }
-        else if(rct.x()+rct.width() >= deskrct.width())
+        else if(winRect.left() <= screenRect.left())
         {
-            return 3;
+            // left
+            showPoint.setX(screenRect.left() - hideSize);
+            showPoint.setY(winRect.top());
+            hidePoint.setX(screenRect.left() - winRect.width() + hideSize);
+            hidePoint.setY(winRect.top());
+        }
+        else if(winRect.right() > screenRect.right())
+        {
+            // right
+            showPoint.setX(screenRect.right() -winRect.width() + hideSize);
+            showPoint.setY(winRect.top());
+            hidePoint.setX(screenRect.right() - hideSize);
+            hidePoint.setY(winRect.top());
         }
         else
         {
-            return 0;
+            //no
+            bfound = false;
         }
+
+        if(bfound)
+        {
+            for(int j=0; j<screenRects.size(); j++)
+            {
+                if(i == j)
+                {
+                    continue;
+                }
+                const QRect& otherScreenRect(screenRects[j]);
+                QRect hideRect(winRect);
+                hideRect.moveTo(hidePoint);
+                QRect showRect(winRect);
+                showRect.moveTo(showPoint);
+                if(!otherScreenRect.intersected(hideRect).isEmpty()
+                        || !otherScreenRect.intersected(showRect).isEmpty())
+                {
+                    bfound = false;
+                    break;
+                }
+            }
+        }
+        if(bfound)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+bool MainWindow::need_hide()
+{
+    if(!autoHide())
+    {
+        return false;
+    }
+    if(isMaximized())
+    {
+        return false;
+    }
+
+    else if(hide_anim->state() != QAbstractAnimation::Stopped)
+    {
+        return false;
+    }
+    else
+    {
+        QVector<QRect> screenRects;
+        for(QScreen* s : QGuiApplication::screens())
+        {
+            screenRects.append(s->geometry());
+        }
+        return check_hide(HIDE_WIN_WIDTH, screenRects, geometry(), hide_show_point, hide_hide_point);
     }
 
 }
 bool MainWindow::need_show()
 {
-
-    if( hided_type == 0)
+    if(!isHided)
     {
         return false;
     }
-    else if(hide_anim->state() != QAbstractAnimation::Stopped)
-    {
-        return false;
-    }
-    else if(show_anim->state() != QAbstractAnimation::Stopped)
+    if(hide_anim->state() != QAbstractAnimation::Stopped)
     {
         return false;
     }
     return true;
 }
 
-void MainWindow::start_hide(int hide_type)
+void MainWindow::start_hide()
 {
-    qDebug() << "Dialog::start_hide" << hide_type;
-    hided_type = hide_type;
+    qDebug() << "Dialog::start_hide";
 
-    switch(hide_type)
-    {
-    case 0:
-        break;
-    case 1:
-        //top
-    {
-        hide_anim->setStartValue(QPoint(geometry().x(), geometry().y()));
-        hide_anim->setEndValue(QPoint(geometry().x(), HIDE_WIN_WIDTH-geometry().height()));
-        hide_anim->start();
-        break;
-    }
-    case 2:
-        //left
-    {
-        hide_anim->setStartValue(QPoint(geometry().x(), geometry().y()));
-        hide_anim->setEndValue(QPoint(HIDE_WIN_WIDTH-geometry().width(), geometry().y()));
-        hide_anim->start();
-        break;
-    }
-    case 3:
-        //right
-    {
-        QRect deskrct = QGuiApplication::screens()[0]->geometry();
-        hide_anim->setStartValue(QPoint(geometry().x(), geometry().y()));
-        hide_anim->setEndValue(QPoint(deskrct.width()-HIDE_WIN_WIDTH, geometry().y()));
-        hide_anim->start();
-        break;
-    }
-    }
+    hide_anim->setStartValue(pos());
+    hide_anim->setEndValue(hide_hide_point);
+    qDebug() << "hide_anim" << hide_anim->startValue() << hide_anim->endValue();
+    isHided = true;
+    hide_anim->start();
 }
 void MainWindow::start_show()
 {
     qDebug() << "Dialog::start_show";
-    int tmp = hided_type;
-    hided_type = 0;
 
-    switch(tmp)
-    {
-    case 0:
-        break;
-    case 1:
-        //top
-    {
-        hide_anim->setStartValue(QPoint(geometry().x(), geometry().y()));
-        hide_anim->setEndValue(QPoint(geometry().x(), -HIDE_WIN_WIDTH));
-        hide_anim->start();
-        break;
-    }
-    case 2:
-        //left
-    {
-        hide_anim->setStartValue(QPoint(geometry().x(), geometry().y()));
-        hide_anim->setEndValue(QPoint(-HIDE_WIN_WIDTH, geometry().y()));
-        hide_anim->start();
-        break;
-    }
-    case 3:
-        //right
-    {
-        QRect deskrct = QGuiApplication::screens()[0]->geometry();
-        hide_anim->setStartValue(QPoint(geometry().x(), geometry().y()));
-        hide_anim->setEndValue(QPoint(deskrct.width()-geometry().width()+HIDE_WIN_WIDTH, geometry().y()));
-        hide_anim->start();
-        break;
-    }
-    }
+    hide_anim->setStartValue(pos());
+    hide_anim->setEndValue(hide_show_point);
+    qDebug() << "hide_anim" << hide_anim->startValue() << hide_anim->endValue();
+    isHided = false;
+    hide_anim->start();
 
 
 }

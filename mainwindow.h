@@ -31,17 +31,19 @@ class MainWindow : public QMainWindow
     ADD_PROPERTY(int , sideRadius)
 
     QPropertyAnimation* hide_anim;
-    QPropertyAnimation* show_anim;
+    QPoint hide_show_point;
+    QPoint hide_hide_point;
+    bool isHided;
+
     int x_last;
     int y_last;
     bool b_move;
-//    bool bShowMax;
 
 
-    int hided_type;
-    int need_hide();
+//    int hided_type;
+    bool need_hide();
     bool need_show();
-    void start_hide(int hide_type);
+    void start_hide();
     void start_show();
 
     void paintEvent(QPaintEvent *event);
