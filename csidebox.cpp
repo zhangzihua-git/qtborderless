@@ -5,7 +5,7 @@
 CSideBox::CSideBox(QWidget *parent) : QWidget(parent)
 {
     b_changeable = true;
-    win = nullptr;
+//    win = nullptr;
 }
 
 void CSideBox::setSideChangeable(bool changeable)
@@ -115,42 +115,40 @@ void CSideBox::do_move(int x, int y)
     {
         return ;
     }
-    if(!win)
-        return ;
-
-    QRect rect = win->geometry();
-
+    int left   =0;
+    int top    =0;
+    int right  =0;
+    int bottom =0;
     switch (sidetype) {
     case T_LEFT:
-        rect.setLeft(rect.left()+x);
+        left = x;
         break;
     case T_RIGHT:
-        rect.setRight(rect.right()+x);
+        right = x;
         break;
     case T_TOP:
-        rect.setTop(rect.top()+y);
+        top = y;
         break;
     case T_BOTTOM:
-        rect.setBottom(rect.bottom()+y);
+        bottom = y;
         break;
     case T_LEFT_TOP:
-        rect.setLeft(rect.left()+x);
-        rect.setTop(rect.top()+y);
+        left = x;
+        top = y;
         break;
     case T_RIGHT_BOTTOM:
-        rect.setRight(rect.right()+x);
-        rect.setBottom(rect.bottom()+y);
+        right = x;
+        bottom = y;
         break;
     case T_LEFT_BOTTOM:
-        rect.setLeft(rect.left()+x);
-        rect.setBottom(rect.bottom()+y);
+        left = x;
+        bottom = y;
         break;
     case T_RIGHT_TOP:
-        rect.setRight(rect.right()+x);
-        rect.setTop(rect.top()+y);
+        right = x;
+        top = y;
         break;
     }
-
-    emit move_rect(rect);
+    emit moved(left, top, right, bottom);
 
 }

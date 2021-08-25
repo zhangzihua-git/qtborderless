@@ -29,17 +29,17 @@ public:
         T_RIGHT_BOTTOM,
     } ;
     void setSideTpe(SideType st);
-    void setWin(QWidget*win)
-    {
-        this->win = win;
-    }
+//    void setWin(QWidget*win)
+//    {
+//        this->win = win;
+//    }
     void setSideSize(int size);
     void setSideChangeable(bool changeable);
 signals:
-    void move_rect(const QRect&);
+    void moved(int left, int top, int right, int bottom);
 private:
     SideType sidetype;
-    QWidget* win;
+//    QWidget* win;
 
     void do_move(int x, int y);
 };

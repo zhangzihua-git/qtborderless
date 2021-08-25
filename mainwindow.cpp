@@ -72,22 +72,14 @@ void MainWindow::init_side()
     ui->w_lb->setSideChangeable(sizeChangeable());
     ui->w_rt->setSideChangeable(sizeChangeable());
     ui->w_rb->setSideChangeable(sizeChangeable());
-    ui->w_l ->setWin(this);
-    ui->w_t ->setWin(this);
-    ui->w_r ->setWin(this);
-    ui->w_b ->setWin(this);
-    ui->w_lt->setWin(this);
-    ui->w_lb->setWin(this);
-    ui->w_rt->setWin(this);
-    ui->w_rb->setWin(this);
-    connect(ui->w_l, &CSideBox::move_rect, this,  &MainWindow::move_rect);
-    connect(ui->w_t, &CSideBox::move_rect, this,  &MainWindow::move_rect);
-    connect(ui->w_r, &CSideBox::move_rect, this,  &MainWindow::move_rect);
-    connect(ui->w_b, &CSideBox::move_rect, this,  &MainWindow::move_rect);
-    connect(ui->w_lt, &CSideBox::move_rect, this, &MainWindow::move_rect);
-    connect(ui->w_lb, &CSideBox::move_rect, this, &MainWindow::move_rect);
-    connect(ui->w_rt, &CSideBox::move_rect, this, &MainWindow::move_rect);
-    connect(ui->w_rb, &CSideBox::move_rect, this, &MainWindow::move_rect);
+    connect(ui->w_l,  &CSideBox::moved, this,  &MainWindow::move_rect);
+    connect(ui->w_t,  &CSideBox::moved, this,  &MainWindow::move_rect);
+    connect(ui->w_r,  &CSideBox::moved, this,  &MainWindow::move_rect);
+    connect(ui->w_b,  &CSideBox::moved, this,  &MainWindow::move_rect);
+    connect(ui->w_lt, &CSideBox::moved, this,  &MainWindow::move_rect);
+    connect(ui->w_lb, &CSideBox::moved, this,  &MainWindow::move_rect);
+    connect(ui->w_rt, &CSideBox::moved, this,  &MainWindow::move_rect);
+    connect(ui->w_rb, &CSideBox::moved, this,  &MainWindow::move_rect);
 
     show_side();
 
@@ -390,11 +382,16 @@ void MainWindow::show_max_or_rest_icon()
     }
 }
 
-void MainWindow::move_rect(const QRect& rect)
+void MainWindow::move_rect(int left, int top, int right, int bottom)
 {
     if(isMaximized())
         return ;
-    setGeometry(rect);
+    QRect nowrect = geometry();
+    nowrect.setLeft(nowrect.left()+left);
+    nowrect.setTop(nowrect.top()+top);
+    nowrect.setRight(nowrect.right()+right);
+    nowrect.setBottom(nowrect.bottom()+bottom);
+    setGeometry(nowrect);
 }
 
 void MainWindow::showMaxOrNormal()

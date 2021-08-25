@@ -65,7 +65,7 @@ class MainWindow : public QMainWindow
     void show_side();
     void hide_side();
     void showMaxOrNormal();
-    void move_rect(const QRect& rect);
+    void move_rect(int left, int top, int right, int bottom);
 
 
 public:
