@@ -84,26 +84,9 @@ void MainWindow::init_side()
     show_side();
 
 }
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , isHided(false)
-    , ui(new Ui::MainWindow)
+
+void MainWindow::show_sideRadius()
 {
-    b_move = false;
-
-    //配置属性
-    set_sideSize(10);
-    set_sideColor(QColor(0, 0, 0, 20));
-    set_autoHide(true);
-    set_sizeChangeable(true);
-    set_sideRadius(10);
-
-
-
-
-    ui->setupUi(this);
-
-
     //qss
     QString qss = R"(
 #title {
@@ -118,7 +101,40 @@ border-bottom-right-radius: %1px;
 }
 )";
     setStyleSheet(qss.arg(sideRadius()));
+}
+void MainWindow::hide_sideRadius()
+{
+    //qss
+    QString qss = R"(
+#title {
+border-image: url(:/frame/title.png);
+border-top-left-radius: %1px;
+border-top-right-radius: %1px;
+}
+#form {
+background-color: rgb(255, 255, 255);
+border-bottom-left-radius: %1px;
+border-bottom-right-radius: %1px;
+}
+)";
+    setStyleSheet(qss.arg(0));
+}
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , isHided(false)
+    , ui(new Ui::MainWindow)
+{
+    b_move = false;
 
+    //配置属性
+    set_sideSize(10);
+    set_sideColor(QColor(0, 0, 0, 100));
+    set_autoHide(true);
+    set_sizeChangeable(true);
+    set_sideRadius(10);
+
+
+    ui->setupUi(this);
 
 
     setWindowFlags(Qt::FramelessWindowHint);    // 去掉边框
@@ -135,6 +151,8 @@ border-bottom-right-radius: %1px;
     //side
     init_side();
 
+    show_sideRadius();
+
     //anim
     hide_anim = new QPropertyAnimation(this, "pos", this);
     hide_anim->setDuration(150);
@@ -149,19 +167,44 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
-
+    const int POINT_SHADOW_EX = 5;
     if (!isMaximized())
     {
-        QPainterPath path;
         QPainter painter(this);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform); //抗锯齿和使用平滑转换算法
 
         QColor color = sideColor();
         int max_alpha = color.alpha();
         int yyw =YYS +sideRadius();
         for (int i = 0; i < yyw; i++)
         {
+            QPainterPath path;
             path.setFillRule(Qt::WindingFill);
-            path.addRect(yyw - i, yyw - i, this->width() - (yyw - i) * 2, this->height() - (yyw - i) * 2);
+            QPoint prect1(yyw - i, yyw - i);
+            QPoint prect2(this->width() - (yyw - i), yyw - i);
+            QPoint prect3(this->width() - (yyw - i),this->height() - (yyw - i));
+            QPoint prect4(yyw - i, this->height() - (yyw - i));
+
+            int radius = POINT_SHADOW_EX + i;
+
+            QPoint p1 = prect1 + QPoint(radius, 0);
+            QPoint p2 = prect2 + QPoint(-radius, 0);
+            QPoint p3 = prect2 + QPoint(0, radius);
+            QPoint p4 = prect3 + QPoint(0, -radius);
+            QPoint p5 = prect3 + QPoint(-radius, 0);
+            QPoint p6 = prect4 + QPoint(radius, 0);
+            QPoint p7 = prect4 + QPoint(0, -radius);
+            QPoint p8 = prect1 + QPoint(0, radius);
+
+            path.moveTo(p1);
+            path.lineTo(p2);
+            path.quadTo(prect2, p3);
+            path.lineTo(p4);
+            path.quadTo(prect3, p5);
+            path.lineTo(p6);
+            path.quadTo(prect4, p7);
+            path.lineTo(p8);
+            path.quadTo(prect1, p1);
             color.setAlpha(max_alpha-max_alpha*i/yyw);
             painter.setPen(color);
             painter.drawPath(path);
@@ -404,12 +447,14 @@ void MainWindow::showMaxOrNormal()
     {
         showNormal();
         show_side();
+        show_sideRadius();
     }
     else
     {
         showMaximized();
         hide_side();
+        hide_sideRadius();
     }
     show_max_or_rest_icon();
-    update();
+//    update();
 }
