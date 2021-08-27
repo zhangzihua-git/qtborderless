@@ -4,28 +4,20 @@
 #include <QMainWindow>
 #include <QPropertyAnimation>
 
+#include "head.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
-#define ADD_PROPERTY(t, p) \
-    Q_PROPERTY(t p READ p WRITE set_##p NOTIFY p##_changed)\
-    t m_##p;\
-public:\
-    Q_SIGNAL void p##_changed(t p);\
-    t p(){return m_##p;}\
-    void set_##p(t p){m_##p = p;}\
-private:
-
-
+class CSide;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 
-    ADD_PROPERTY(int, sideSize)
+    ADD_PROPERTY(int, shadowSize)
     //alpha 0最浅 255 最深
-    ADD_PROPERTY(QColor, sideColor)
+    ADD_PROPERTY(QColor, shadowColor)
     ADD_PROPERTY(bool, autoHide)
     ADD_PROPERTY(bool, sizeChangeable)
     ADD_PROPERTY(int , sideRadius)
@@ -58,25 +50,33 @@ class MainWindow : public QMainWindow
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
+     void resizeEvent(QResizeEvent *event);
 
     void show_max_or_rest_icon();
     void init_side();
-
     void show_side();
     void hide_side();
+
+    void show_shadow();
+    void hide_shadow();
     void show_sideRadius();
     void hide_sideRadius();
     void showMaxOrNormal();
-    void move_rect(int left, int top, int right, int bottom);
 
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void move_rect(int left, int top, int right, int bottom);
+signals:
+    void resized(QSize size);
 private:
     Ui::MainWindow *ui;
 
+
+    CSide* side;
 
 };
 #endif // MAINWINDOW_H

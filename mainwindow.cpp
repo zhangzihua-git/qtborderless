@@ -5,84 +5,113 @@
 #include <QApplication>
 #include <QScreen>
 #include <QMouseEvent>
+#include <QResizeEvent>
 #include <QDebug>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "cside.h"
 
-#define YYS sideSize()
+#define YYS shadowSize()
 #define HIDE_WIN_WIDTH (YYS+3)
 
 
-void MainWindow::show_side()
+//void MainWindow::show_side()
+//{
+//    ui->w_l ->setVisible(true);
+//    ui->w_t ->setVisible(true);
+//    ui->w_r ->setVisible(true);
+//    ui->w_b ->setVisible(true);
+//    ui->w_lt->setVisible(true);
+//    ui->w_lb->setVisible(true);
+//    ui->w_rt->setVisible(true);
+//    ui->w_rb->setVisible(true);
+//    ui->w_l ->setSideSize(YYS);
+//    ui->w_t ->setSideSize(YYS);
+//    ui->w_r ->setSideSize(YYS);
+//    ui->w_b ->setSideSize(YYS);
+//    ui->w_lt->setSideSize(YYS);
+//    ui->w_lb->setSideSize(YYS);
+//    ui->w_rt->setSideSize(YYS);
+//    ui->w_rb->setSideSize(YYS);
+
+
+//}
+//void MainWindow::hide_side()
+//{
+//    ui->w_l ->setVisible(false);
+//    ui->w_t ->setVisible(false);
+//    ui->w_r ->setVisible(false);
+//    ui->w_b ->setVisible(false);
+//    ui->w_lt->setVisible(false);
+//    ui->w_lb->setVisible(false);
+//    ui->w_rt->setVisible(false);
+//    ui->w_rb->setVisible(false);
+//    ui->w_l ->setSideSize(0);
+//    ui->w_t ->setSideSize(0);
+//    ui->w_r ->setSideSize(0);
+//    ui->w_b ->setSideSize(0);
+//    ui->w_lt->setSideSize(0);
+//    ui->w_lb->setSideSize(0);
+//    ui->w_rt->setSideSize(0);
+//    ui->w_rb->setSideSize(0);
+//}
+//void MainWindow::init_side()
+//{
+//    ui->w_l ->setSideTpe(CSideBox::T_LEFT);
+//    ui->w_t ->setSideTpe(CSideBox::T_TOP);
+//    ui->w_r ->setSideTpe(CSideBox::T_RIGHT);
+//    ui->w_b ->setSideTpe(CSideBox::T_BOTTOM);
+//    ui->w_lt->setSideTpe(CSideBox::T_LEFT_TOP);
+//    ui->w_lb->setSideTpe(CSideBox::T_LEFT_BOTTOM);
+//    ui->w_rt->setSideTpe(CSideBox::T_RIGHT_TOP);
+//    ui->w_rb->setSideTpe(CSideBox::T_RIGHT_BOTTOM);
+//    ui->w_l ->setSideChangeable(sizeChangeable());
+//    ui->w_t ->setSideChangeable(sizeChangeable());
+//    ui->w_r ->setSideChangeable(sizeChangeable());
+//    ui->w_b ->setSideChangeable(sizeChangeable());
+//    ui->w_lt->setSideChangeable(sizeChangeable());
+//    ui->w_lb->setSideChangeable(sizeChangeable());
+//    ui->w_rt->setSideChangeable(sizeChangeable());
+//    ui->w_rb->setSideChangeable(sizeChangeable());
+//    connect(ui->w_l,  &CSideBox::moved, this,  &MainWindow::move_rect);
+//    connect(ui->w_t,  &CSideBox::moved, this,  &MainWindow::move_rect);
+//    connect(ui->w_r,  &CSideBox::moved, this,  &MainWindow::move_rect);
+//    connect(ui->w_b,  &CSideBox::moved, this,  &MainWindow::move_rect);
+//    connect(ui->w_lt, &CSideBox::moved, this,  &MainWindow::move_rect);
+//    connect(ui->w_lb, &CSideBox::moved, this,  &MainWindow::move_rect);
+//    connect(ui->w_rt, &CSideBox::moved, this,  &MainWindow::move_rect);
+//    connect(ui->w_rb, &CSideBox::moved, this,  &MainWindow::move_rect);
+
+//    show_side();
+
+//}
+void MainWindow::show_shadow()
 {
-    ui->w_l ->setVisible(true);
-    ui->w_t ->setVisible(true);
-    ui->w_r ->setVisible(true);
-    ui->w_b ->setVisible(true);
-    ui->w_lt->setVisible(true);
-    ui->w_lb->setVisible(true);
-    ui->w_rt->setVisible(true);
-    ui->w_rb->setVisible(true);
-    ui->w_l ->setSideSize(YYS);
-    ui->w_t ->setSideSize(YYS);
-    ui->w_r ->setSideSize(YYS);
-    ui->w_b ->setSideSize(YYS);
-    ui->w_lt->setSideSize(YYS);
-    ui->w_lb->setSideSize(YYS);
-    ui->w_rt->setSideSize(YYS);
-    ui->w_rb->setSideSize(YYS);
-
-
+    ui->win->layout()->setContentsMargins(shadowSize(), shadowSize(), shadowSize(), shadowSize());
 }
-void MainWindow::hide_side()
+void MainWindow::hide_shadow()
 {
-    ui->w_l ->setVisible(false);
-    ui->w_t ->setVisible(false);
-    ui->w_r ->setVisible(false);
-    ui->w_b ->setVisible(false);
-    ui->w_lt->setVisible(false);
-    ui->w_lb->setVisible(false);
-    ui->w_rt->setVisible(false);
-    ui->w_rb->setVisible(false);
-    ui->w_l ->setSideSize(0);
-    ui->w_t ->setSideSize(0);
-    ui->w_r ->setSideSize(0);
-    ui->w_b ->setSideSize(0);
-    ui->w_lt->setSideSize(0);
-    ui->w_lb->setSideSize(0);
-    ui->w_rt->setSideSize(0);
-    ui->w_rb->setSideSize(0);
+    ui->win->layout()->setContentsMargins(0,0,0,0);
 }
 void MainWindow::init_side()
 {
-    ui->w_l ->setSideTpe(CSideBox::T_LEFT);
-    ui->w_t ->setSideTpe(CSideBox::T_TOP);
-    ui->w_r ->setSideTpe(CSideBox::T_RIGHT);
-    ui->w_b ->setSideTpe(CSideBox::T_BOTTOM);
-    ui->w_lt->setSideTpe(CSideBox::T_LEFT_TOP);
-    ui->w_lb->setSideTpe(CSideBox::T_LEFT_BOTTOM);
-    ui->w_rt->setSideTpe(CSideBox::T_RIGHT_TOP);
-    ui->w_rb->setSideTpe(CSideBox::T_RIGHT_BOTTOM);
-    ui->w_l ->setSideChangeable(sizeChangeable());
-    ui->w_t ->setSideChangeable(sizeChangeable());
-    ui->w_r ->setSideChangeable(sizeChangeable());
-    ui->w_b ->setSideChangeable(sizeChangeable());
-    ui->w_lt->setSideChangeable(sizeChangeable());
-    ui->w_lb->setSideChangeable(sizeChangeable());
-    ui->w_rt->setSideChangeable(sizeChangeable());
-    ui->w_rb->setSideChangeable(sizeChangeable());
-    connect(ui->w_l,  &CSideBox::moved, this,  &MainWindow::move_rect);
-    connect(ui->w_t,  &CSideBox::moved, this,  &MainWindow::move_rect);
-    connect(ui->w_r,  &CSideBox::moved, this,  &MainWindow::move_rect);
-    connect(ui->w_b,  &CSideBox::moved, this,  &MainWindow::move_rect);
-    connect(ui->w_lt, &CSideBox::moved, this,  &MainWindow::move_rect);
-    connect(ui->w_lb, &CSideBox::moved, this,  &MainWindow::move_rect);
-    connect(ui->w_rt, &CSideBox::moved, this,  &MainWindow::move_rect);
-    connect(ui->w_rb, &CSideBox::moved, this,  &MainWindow::move_rect);
-
-    show_side();
-
+    side = new CSide(this);
+}
+void MainWindow::show_side()
+{
+    if(sizeChangeable())
+    {
+        side->show();
+    }
+    else
+    {
+        side->hide();
+    }
+}
+void MainWindow::hide_side()
+{
+    side->hide();
 }
 
 void MainWindow::show_sideRadius()
@@ -123,12 +152,13 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , isHided(false)
     , ui(new Ui::MainWindow)
+    , side(nullptr)
 {
     b_move = false;
 
     //配置属性
-    set_sideSize(10);
-    set_sideColor(QColor(0, 0, 0, 100));
+    set_shadowSize(10);
+    set_shadowColor(QColor(0, 0, 0, 100));
     set_autoHide(true);
     set_sizeChangeable(true);
     set_sideRadius(10);
@@ -148,16 +178,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     show_max_or_rest_icon();
 
+    //shadow
+    show_shadow();
+
     //side
     init_side();
+    show_side();
 
+    //round window
     show_sideRadius();
+
+
 
     //anim
     hide_anim = new QPropertyAnimation(this, "pos", this);
     hide_anim->setDuration(150);
-
-
 }
 
 MainWindow::~MainWindow()
@@ -173,13 +208,12 @@ void MainWindow::paintEvent(QPaintEvent *event)
         QPainter painter(this);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform); //抗锯齿和使用平滑转换算法
 
-        QColor color = sideColor();
+        QColor color = shadowColor();
         int max_alpha = color.alpha();
         int yyw =YYS +sideRadius();
         for (int i = 0; i < yyw; i++)
         {
             QPainterPath path;
-            path.setFillRule(Qt::WindingFill);
             QPoint prect1(yyw - i, yyw - i);
             QPoint prect2(this->width() - (yyw - i), yyw - i);
             QPoint prect3(this->width() - (yyw - i),this->height() - (yyw - i));
@@ -398,6 +432,10 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *)
     showMaxOrNormal();
 }
 
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    emit resized(event->size());
+}
 void MainWindow::show_max_or_rest_icon()
 {
     if(!sizeChangeable())
@@ -446,14 +484,16 @@ void MainWindow::showMaxOrNormal()
     if(isMaximized())
     {
         showNormal();
-        show_side();
+        show_shadow();
         show_sideRadius();
+        show_side();
     }
     else
     {
         showMaximized();
-        hide_side();
+        hide_shadow();
         hide_sideRadius();
+        hide_side();
     }
     show_max_or_rest_icon();
 //    update();
