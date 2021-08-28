@@ -2,22 +2,8 @@
 #include "mainwindow.h"
 #include "csidebox.h"
 
-
-//CSideBox *w_lt;
-//CSideBox *w_t ;
-//CSideBox *w_rt;
-//CSideBox *w_l ;
-//CSideBox *w_r ;
-//CSideBox *w_lb;
-//CSideBox *w_b ;
-//CSideBox *w_rb;
-
-
-
 CSide::CSide(MainWindow *parent) : QObject(parent)
 {
-//    connect(this, &CSide::moved, parent, &MainWindow::move_rect);
-
     w_lt = new CSideBox(parent);
     w_t  = new CSideBox(parent);
     w_rt = new CSideBox(parent);
@@ -105,7 +91,6 @@ void CSide::do_resize(QSize size)
     rectSide2.moveCenter(rectWin.bottomRight());
     w_rb->setGeometry(rectSide2);
 
-    qDebug() << "do_resize" << size << w_t->geometry();
 }
 
 void CSide::show()
