@@ -22,7 +22,7 @@ Form::Form(QWidget *parent) :
     ui->cb_sizeChangable->setChecked(g_mainwin->sizeChangable());
 
     ui->le_radius->setText(QString::number(g_mainwin->sideRadius()));
-
+    ui->le_titleSize->setText(QString::number(g_mainwin->titleSize()));
 
     connect(ui->pb_apply, &QPushButton::released, this, &Form::do_apply);
     connect(ui->pb_clr, &QPushButton::released, this, &Form::do_setclr);
@@ -47,6 +47,8 @@ void Form::do_apply()
     g_mainwin->set_sizeChangable(ui->cb_sizeChangable->isChecked());
     qDebug() << "sideRadius" << ui->le_radius->text().toInt();
     g_mainwin->set_sideRadius(ui->le_radius->text().toInt());
+    qDebug() << "titleSize" << ui->le_titleSize->text().toInt();
+    g_mainwin->set_titleSize(ui->le_titleSize->text().toInt());
 
 }
 

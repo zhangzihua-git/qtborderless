@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
     ADD_PROPERTY(bool, autoHide)
     ADD_PROPERTY(bool, sizeChangable)
     ADD_PROPERTY(int , sideRadius)
+    ADD_PROPERTY(int , titleSize)
 
 
     QPropertyAnimation* hide_anim;
@@ -70,6 +71,7 @@ private:
 
 private slots:
     void do_shadowSize(int);
+    void do_titleSize(int);
     void show_shadow();
     void show_max_or_rest_icon();
     void init_side();

@@ -93,10 +93,13 @@ MainWindow::MainWindow(QWidget *parent)
     set_autoHide(true);
     set_sizeChangable(true);
     set_sideRadius(10);
+    set_titleSize(80);
 
 
     ui->setupUi(this);
 
+    //size
+    resize(ui->form->size().width()+2*shadowSize(), ui->form->size().height()+2*shadowSize() + titleSize());
 
     setWindowFlags(Qt::FramelessWindowHint);    // 去掉边框
     setAttribute(Qt::WA_TranslucentBackground); // 背景透明
@@ -114,6 +117,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::sizeChangable_changed, this, &MainWindow::show_side);
     connect(this, &MainWindow::sideRadius_changed, this, &MainWindow::show_sideRadius);
     connect(this, &MainWindow::sideRadius_changed, this, (void (MainWindow::*)())&MainWindow::update);
+    connect(this, &MainWindow::titleSize_changed, this, &MainWindow::do_titleSize);
 
 
     show_max_or_rest_icon();
@@ -128,7 +132,9 @@ MainWindow::MainWindow(QWidget *parent)
     //round window
     show_sideRadius();
 
-
+    //title
+    ui->title->setMinimumHeight(titleSize());
+    ui->title->setMaximumHeight(titleSize());
 
     //anim
     hide_anim = new QPropertyAnimation(this, "pos", this);
@@ -142,6 +148,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
+    qDebug() << size() << ui->form->size();
     const int POINT_SHADOW_EX = 5;
     if (!isMaximized())
     {
@@ -440,8 +447,11 @@ void MainWindow::do_shadowSize(int /*s*/)
     emit resized(size());
     update();
 }
+void MainWindow::do_titleSize(int /*s*/)
+{
+    //title
+    ui->title->setMinimumHeight(titleSize());
+    ui->title->setMaximumHeight(titleSize());
+    resize(ui->form->size().width()+2*shadowSize(), ui->form->size().height()+2*shadowSize() + titleSize());
 
-//void MainWindow::do_sideRadius(int)
-//{
-//    update();
-//}
+}
