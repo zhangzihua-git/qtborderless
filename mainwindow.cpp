@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
     set_autoHide(true);
     set_sizeChangable(true);
     set_sideRadius(10);
-    set_titleSize(80);
+    set_titleSize(50);
 
 
     ui->setupUi(this);
