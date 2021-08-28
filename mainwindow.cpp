@@ -12,80 +12,10 @@
 #include "ui_mainwindow.h"
 #include "cside.h"
 
-#define YYS shadowSize()
-#define HIDE_WIN_WIDTH (YYS+3)
+#define HIDE_WIN_WIDTH (shadowSize()+3)
 
+MainWindow* g_mainwin= nullptr;
 
-//void MainWindow::show_side()
-//{
-//    ui->w_l ->setVisible(true);
-//    ui->w_t ->setVisible(true);
-//    ui->w_r ->setVisible(true);
-//    ui->w_b ->setVisible(true);
-//    ui->w_lt->setVisible(true);
-//    ui->w_lb->setVisible(true);
-//    ui->w_rt->setVisible(true);
-//    ui->w_rb->setVisible(true);
-//    ui->w_l ->setSideSize(YYS);
-//    ui->w_t ->setSideSize(YYS);
-//    ui->w_r ->setSideSize(YYS);
-//    ui->w_b ->setSideSize(YYS);
-//    ui->w_lt->setSideSize(YYS);
-//    ui->w_lb->setSideSize(YYS);
-//    ui->w_rt->setSideSize(YYS);
-//    ui->w_rb->setSideSize(YYS);
-
-
-//}
-//void MainWindow::hide_side()
-//{
-//    ui->w_l ->setVisible(false);
-//    ui->w_t ->setVisible(false);
-//    ui->w_r ->setVisible(false);
-//    ui->w_b ->setVisible(false);
-//    ui->w_lt->setVisible(false);
-//    ui->w_lb->setVisible(false);
-//    ui->w_rt->setVisible(false);
-//    ui->w_rb->setVisible(false);
-//    ui->w_l ->setSideSize(0);
-//    ui->w_t ->setSideSize(0);
-//    ui->w_r ->setSideSize(0);
-//    ui->w_b ->setSideSize(0);
-//    ui->w_lt->setSideSize(0);
-//    ui->w_lb->setSideSize(0);
-//    ui->w_rt->setSideSize(0);
-//    ui->w_rb->setSideSize(0);
-//}
-//void MainWindow::init_side()
-//{
-//    ui->w_l ->setSideTpe(CSideBox::T_LEFT);
-//    ui->w_t ->setSideTpe(CSideBox::T_TOP);
-//    ui->w_r ->setSideTpe(CSideBox::T_RIGHT);
-//    ui->w_b ->setSideTpe(CSideBox::T_BOTTOM);
-//    ui->w_lt->setSideTpe(CSideBox::T_LEFT_TOP);
-//    ui->w_lb->setSideTpe(CSideBox::T_LEFT_BOTTOM);
-//    ui->w_rt->setSideTpe(CSideBox::T_RIGHT_TOP);
-//    ui->w_rb->setSideTpe(CSideBox::T_RIGHT_BOTTOM);
-//    ui->w_l ->setSideChangeable(sizeChangeable());
-//    ui->w_t ->setSideChangeable(sizeChangeable());
-//    ui->w_r ->setSideChangeable(sizeChangeable());
-//    ui->w_b ->setSideChangeable(sizeChangeable());
-//    ui->w_lt->setSideChangeable(sizeChangeable());
-//    ui->w_lb->setSideChangeable(sizeChangeable());
-//    ui->w_rt->setSideChangeable(sizeChangeable());
-//    ui->w_rb->setSideChangeable(sizeChangeable());
-//    connect(ui->w_l,  &CSideBox::moved, this,  &MainWindow::move_rect);
-//    connect(ui->w_t,  &CSideBox::moved, this,  &MainWindow::move_rect);
-//    connect(ui->w_r,  &CSideBox::moved, this,  &MainWindow::move_rect);
-//    connect(ui->w_b,  &CSideBox::moved, this,  &MainWindow::move_rect);
-//    connect(ui->w_lt, &CSideBox::moved, this,  &MainWindow::move_rect);
-//    connect(ui->w_lb, &CSideBox::moved, this,  &MainWindow::move_rect);
-//    connect(ui->w_rt, &CSideBox::moved, this,  &MainWindow::move_rect);
-//    connect(ui->w_rb, &CSideBox::moved, this,  &MainWindow::move_rect);
-
-//    show_side();
-
-//}
 void MainWindow::show_shadow()
 {
     ui->win->layout()->setContentsMargins(shadowSize(), shadowSize(), shadowSize(), shadowSize());
@@ -100,7 +30,7 @@ void MainWindow::init_side()
 }
 void MainWindow::show_side()
 {
-    if(sizeChangeable())
+    if(sizeChangable())
     {
         side->show();
     }
@@ -154,13 +84,14 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , side(nullptr)
 {
+    g_mainwin = this;
     b_move = false;
 
     //配置属性
     set_shadowSize(10);
-    set_shadowColor(QColor(0, 0, 0, 100));
+    set_shadowColor(QColor(255, 0, 0, 100));
     set_autoHide(true);
-    set_sizeChangeable(true);
+    set_sizeChangable(true);
     set_sideRadius(10);
 
 
@@ -175,6 +106,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->min, &QToolButton::released, this,&MainWindow::showMinimized);
     connect(ui->max, &QToolButton::released, this, &MainWindow::showMaxOrNormal);
     connect(ui->rest, &QToolButton::released, this, &MainWindow::showMaxOrNormal);
+
+    //property modify
+    connect(this, &MainWindow::shadowSize_changed, this, &MainWindow::do_shadowSize);
+    connect(this, &MainWindow::shadowColor_changed, this, (void (MainWindow::*)())&MainWindow::update);
+    connect(this, &MainWindow::sizeChangable_changed, this, &MainWindow::show_max_or_rest_icon);
+    connect(this, &MainWindow::sizeChangable_changed, this, &MainWindow::show_side);
+    connect(this, &MainWindow::sideRadius_changed, this, &MainWindow::show_sideRadius);
+    connect(this, &MainWindow::sideRadius_changed, this, (void (MainWindow::*)())&MainWindow::update);
+
 
     show_max_or_rest_icon();
 
@@ -210,7 +150,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
         QColor color = shadowColor();
         int max_alpha = color.alpha();
-        int yyw =YYS +sideRadius();
+        int yyw =shadowSize() +sideRadius();
         for (int i = 0; i < yyw; i++)
         {
             QPainterPath path;
@@ -379,21 +319,16 @@ bool MainWindow::need_show()
 
 void MainWindow::start_hide()
 {
-    qDebug() << "Dialog::start_hide";
 
     hide_anim->setStartValue(pos());
     hide_anim->setEndValue(hide_hide_point);
-    qDebug() << "hide_anim" << hide_anim->startValue() << hide_anim->endValue();
     isHided = true;
     hide_anim->start();
 }
 void MainWindow::start_show()
 {
-    qDebug() << "Dialog::start_show";
-
     hide_anim->setStartValue(pos());
     hide_anim->setEndValue(hide_show_point);
-    qDebug() << "hide_anim" << hide_anim->startValue() << hide_anim->endValue();
     isHided = false;
     hide_anim->start();
 
@@ -438,7 +373,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 }
 void MainWindow::show_max_or_rest_icon()
 {
-    if(!sizeChangeable())
+    if(!sizeChangable())
     {
         ui->max->setVisible(false);
         ui->max->setEnabled(false);
@@ -477,7 +412,7 @@ void MainWindow::move_rect(int left, int top, int right, int bottom)
 
 void MainWindow::showMaxOrNormal()
 {
-    if(!sizeChangeable())
+    if(!sizeChangable())
     {
         return ;
     }
@@ -498,3 +433,15 @@ void MainWindow::showMaxOrNormal()
     show_max_or_rest_icon();
 //    update();
 }
+
+void MainWindow::do_shadowSize(int /*s*/)
+{
+    show_shadow();
+    emit resized(size());
+    update();
+}
+
+//void MainWindow::do_sideRadius(int)
+//{
+//    update();
+//}

@@ -8,8 +8,8 @@
     t m_##p;\
 public:\
     Q_SIGNAL void p##_changed(t p);\
-    t p(){return m_##p;}\
-    void set_##p(t p){m_##p = p;}\
+    t p()const {return m_##p;}\
+    void set_##p(t p){m_##p = p;emit p##_changed(p);}\
 private:
 
 

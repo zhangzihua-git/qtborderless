@@ -16,11 +16,11 @@ class MainWindow : public QMainWindow
 
 
     ADD_PROPERTY(int, shadowSize)
-    //alpha 0最浅 255 最深
     ADD_PROPERTY(QColor, shadowColor)
     ADD_PROPERTY(bool, autoHide)
-    ADD_PROPERTY(bool, sizeChangeable)
+    ADD_PROPERTY(bool, sizeChangable)
     ADD_PROPERTY(int , sideRadius)
+
 
     QPropertyAnimation* hide_anim;
     QPoint hide_show_point;
@@ -52,16 +52,6 @@ class MainWindow : public QMainWindow
     void mouseDoubleClickEvent(QMouseEvent *event);
      void resizeEvent(QResizeEvent *event);
 
-    void show_max_or_rest_icon();
-    void init_side();
-    void show_side();
-    void hide_side();
-
-    void show_shadow();
-    void hide_shadow();
-    void show_sideRadius();
-    void hide_sideRadius();
-    void showMaxOrNormal();
 
 
 public:
@@ -78,5 +68,16 @@ private:
 
     CSide* side;
 
+private slots:
+    void do_shadowSize(int);
+    void show_shadow();
+    void show_max_or_rest_icon();
+    void init_side();
+    void show_side();
+    void hide_side();
+    void hide_shadow();
+    void show_sideRadius();
+    void hide_sideRadius();
+    void showMaxOrNormal();
 };
 #endif // MAINWINDOW_H

@@ -17,6 +17,10 @@ public:
 
 private:
     Ui::Form *ui;
+private slots:
+    void do_apply();
+    void do_setclr();
+
 };
 
 #endif // FORM_H
